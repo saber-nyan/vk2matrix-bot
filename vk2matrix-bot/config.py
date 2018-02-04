@@ -17,6 +17,8 @@ p = 'MATRIX_'
 try:
     USERNAME = os.environ[p + 'USERNAME']  # Matrix bot username
     PASSWORD = os.environ[p + 'PASSWORD']  # Matrix bot password
+    VK_LOGIN = os.environ[p + 'VK_LOGIN']  # vk.com login (phone number is preferred)
+    VK_PASSWORD = os.environ[p + 'VK_PASSWORD']  # vk.com password
 except:
     print("Please set necessary ENV variables!\n"
           "Read more in config.py or README.md.\n\n"
