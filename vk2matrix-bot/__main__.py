@@ -10,6 +10,7 @@ import sys
 import tempfile
 import time
 
+import requests
 from matrix_bot_api.matrix_bot_api import MatrixBotAPI
 from matrix_bot_api.mcommand_handler import MCommandHandler
 from matrix_bot_api.mregex_handler import MRegexHandler
@@ -98,32 +99,39 @@ def bot_rgx_vk_wall(room: Room, event: dict):
         posts=post_id,
         version=VK_VER
     )[0]
-    text = vk_result["text"]
+    text: str = vk_result["text"]
     attachments = vk_result.get("attachments", [])
-    room.send_text(text)
+    if len(text.replace(' ', '')) != 0:
+        room.send_text(text)
     for base_attach in attachments:
         if base_attach["type"] == "photo":  # TODO: moar types!
             attach = base_attach["photo"]
-            max_url = vk_photo_select_max_url(attach)
-
+            vk_max_url = vk_photo_select_max_url(attach)
+            # vk_thumb_url = attach["photo_75"]
+            matrix_local_uri_max = room.client.upload(requests.get(vk_max_url).content,
+                                                      "image/*")
+            # matrix_local_uri_thumb = room.client.upload(requests.get(vk_thumb_url).content,
+            #                                             "image/*")
+            # log.debug("uploaded to Matrix server;\n"
+            #           "max {}, thumb {}".format(matrix_local_uri_max,
+            #                                     matrix_local_uri_thumb))
             raw_data = {
-                "url": max_url,
-                "msgtype": "m.image",
                 "body": str(attach["id"]),
                 "info": {
-                    "mimetype": "image/jpeg",
+                    # "thumbnail_info": {
+                    #     "h": 75,
+                    #     "w": 75,
+                    # },
                     "h": attach["height"],
+                    # "thumbnail_url": matrix_local_uri_max,
                     "w": attach["width"],
-                    "size": 100221,
-                    "thumbnail_url": max_url,
-                    "thumbnail_info": {
-                        "mimetype": "image/jpeg",
-                        "h": attach["height"],
-                        "w": attach["width"],
-                        "size": 100221,
-                    },
                 },
+                "msgtype": "m.image",
+                "url": matrix_local_uri_max,
             }
+
+            # FIXME: preview auto-generation is disabled on matrix.org server
+            # But must work on other servers... + ancient API library!
 
             room.client.api.send_message_event(
                 room_id=room.room_id,

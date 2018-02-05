@@ -21,6 +21,7 @@ setup(
     install_requires=[
         'vk_api',
         'matrix_bot_api',
+        'requests',
     ],
     packages=find_packages(),
     include_package_data=True
