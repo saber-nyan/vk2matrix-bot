@@ -34,7 +34,7 @@ vk: vk_api.VkApiMethod
 VK_PHOTO_ATTACH_REGEX = re.compile(r"photo_(\d+)")
 
 
-def vk_photo_select_max_url(photo_attach: dict):
+def vk_photo_select_max_url(photo_attach: dict) -> str:
     """
     Selects the link to the maximum resolution image from
     the retarded JSON structure of the VKontakte response.
@@ -105,14 +105,30 @@ def bot_rgx_vk_wall(room: Room, event: dict):
         if base_attach["type"] == "photo":  # TODO: moar types!
             attach = base_attach["photo"]
             max_url = vk_photo_select_max_url(attach)
-            # thumb_url = attach["photo_75"]
-            room.send_image(
-                url=max_url,
-                name=str(attach["id"]),
-                imageinfo={
+
+            raw_data = {
+                "url": max_url,
+                "msgtype": "m.image",
+                "body": str(attach["id"]),
+                "info": {
+                    "mimetype": "image/jpeg",
                     "h": attach["height"],
                     "w": attach["width"],
-                }
+                    "size": 100221,
+                    "thumbnail_url": max_url,
+                    "thumbnail_info": {
+                        "mimetype": "image/jpeg",
+                        "h": attach["height"],
+                        "w": attach["width"],
+                        "size": 100221,
+                    },
+                },
+            }
+
+            room.client.api.send_message_event(
+                room_id=room.room_id,
+                event_type="m.room.message",
+                content=raw_data
             )
 
 
