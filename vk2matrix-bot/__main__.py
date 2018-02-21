@@ -11,9 +11,6 @@ import tempfile
 import time
 
 import requests
-from matrix_bot_api.matrix_bot_api import MatrixBotAPI
-from matrix_bot_api.mcommand_handler import MCommandHandler
-from matrix_bot_api.mregex_handler import MRegexHandler
 from matrix_client.room import Room
 from vk_api import vk_api
 

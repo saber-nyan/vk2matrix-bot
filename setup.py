@@ -18,10 +18,14 @@ setup(
     author_email='saber-nyan@ya.ru',
     url='https://github.com/saber-nyan/vk2matrix-bot',
     license='WTFPL',
+    dependency_links=[
+        "https://github.com/MaT1g3R/matrix-python-sdk/archive/52207cdc25d797295dbf795db41e9eb189bc2d82.zip"
+        "#egg=matrix_client-0.0.6.git+52207cd",
+    ],
     install_requires=[
         'vk_api',
-        'matrix_bot_api',
         'requests',
+        'matrix_client==0.0.6.git+52207cd',
     ],
     packages=find_packages(),
     include_package_data=True
