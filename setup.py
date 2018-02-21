@@ -25,6 +25,7 @@ setup(
     install_requires=[
         'vk_api',
         'requests',
+        'aiohttp',
         'matrix_client==0.0.6.git+52207cd',
     ],
     packages=find_packages(),

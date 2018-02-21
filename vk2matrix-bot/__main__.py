@@ -11,6 +11,9 @@ import tempfile
 import time
 
 import requests
+from matrix_bot_api.matrix_bot_api import MatrixBotAPI
+from matrix_bot_api.mcommand_handler import MCommandHandler
+from matrix_bot_api.mregex_handler import MRegexHandler
 from matrix_client.room import Room
 from vk_api import vk_api
 
@@ -99,7 +102,8 @@ def bot_rgx_vk_wall(room: Room, event: dict):
     text: str = vk_result["text"]
     attachments = vk_result.get("attachments", [])
     if len(text.replace(' ', '')) != 0:
-        room.send_text(text)
+        room.send_notice(text)
+        # room.send_text(text)
     for base_attach in attachments:
         if base_attach["type"] == "photo":  # TODO: moar types!
             attach = base_attach["photo"]
